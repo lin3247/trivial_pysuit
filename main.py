@@ -111,7 +111,8 @@ while not done:
         timer = font.render("Timer: " + str(remaining_time//1000) + "." + str((remaining_time%1000)//100), True, BLACK)   
 
         #check if close enough to 0 time left
-        if(abs(remaining_time - 100) < 0):
+        if(remaining_time <= 10):
+            remaining_time = 0
             in_game = False
 
 
