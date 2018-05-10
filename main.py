@@ -3,6 +3,11 @@ import pygame_textinput
 import pygame
 from button import Button
 
+import random
+
+
+
+
 pygame.init()
 
 #colors
@@ -22,35 +27,120 @@ BUTTON_STYLE = {"hover_color" : BLUE,
 title_font = pygame.font.SysFont("arial", 60)                
 font = pygame.font.SysFont("arial", 35)
 
-curr_score = 0
-curr_category = "animals"
+
+
+curr_score = 0					#store game status variables
+curr_category = ""		#store current game category
+curr_category_index = 0
+curr_time = 0					#store current time remaining in game
+
+clock = pygame.time.Clock()
+start_time = pygame.time.get_ticks()
+
+categories = ["countries", "colors", "fruit", "animals"]
+category = font.render("Category: " + curr_category, True, BLACK)
+
+
+
+done = False
+in_game = False
+
+def update_game_status():
+    global in_game
+    global start_time
+    global button
+    global remaining_time
+    global category
+    global categories
+    global curr_category
+    global curr_category_index
+    global points
+
+    in_game = not in_game
+
+    if(in_game):
+        start_time = pygame.time.get_ticks()
+        temp_index = random.randint(0,len(categories)-1)
+        while(temp_index == curr_category_index):
+            temp_index = random.randint(0,len(categories)-1)
+        curr_category_index = temp_index
+        curr_category = categories[curr_category_index]
+        category = font.render("Category: " + curr_category, True, BLACK)
+        points = 0
+    else:
+        remaining_time = 0
+    
+def get_word_value(word):
+
+    temp_val = 1
+
+
+    return temp_val
+
+
 
 title = title_font.render("Trivia", True, BLUE)
 timer = font.render("Timer: ", True, BLACK)
-category = font.render("Category: " + curr_category, True, BLACK)
+
 input_start = font.render("Input: ______________", True, BLACK)
 text_input = pygame_textinput.TextInput()
 score = font.render("Score: " + str(curr_score), True, BLACK)
-button = Button((200,450,200,50),RED, GREEN,text="start", **BUTTON_STYLE)
+button = Button((200,450,200,50),RED, update_game_status, text="start/stop", **BUTTON_STYLE)
 
 screen = pygame.display.set_mode((600, 600))
-clock = pygame.time.Clock()
-done = False
+
+
+
 
 while not done:
     screen.fill((225, 225, 225))
 
     events = pygame.event.get()
-    for event in events:
+    for event in events:				#check for exit conditions
         if event.type == pygame.QUIT:
             done = True
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                done = True
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+            done = True
+        button.check_event(event)
+    if(done):
+        break
 
-    # Feed it with events every frame
+    if(in_game):
+        #display remaining_time
+        remaining_time = (59999 - (pygame.time.get_ticks() - start_time))
+        timer = font.render("Timer: " + str(remaining_time//1000) + "." + str((remaining_time%1000)//100), True, BLACK)   
+
+        #check if close enough to 0 time left
+        if(abs(remaining_time - 100) < 0):
+            in_game = False
+
+
+    #Feed text_input with events every frame so it can grab user input.
+    #Also, only returns true only when user presses ENTER/RETURN key
     if text_input.update(events):
-        curr_category=text_input.get_text()
-        category = font.render("Category: " + curr_category, True, BLACK)
+    	if(in_game):
+            #get current word
+            word = text_input.get_text()
+            
+            #get word value
+            value = get_word_value("sdfsf")
+
+            #update points
+            points = points + value
+
+            #set a new category
+            temp_index = random.randint(0,len(categories)-1)
+            while(temp_index == curr_category_index):
+                temp_index = random.randint(0,len(categories)-1)
+            curr_category_index = temp_index
+            curr_category = categories[curr_category_index]
+            category = font.render("Category: " + curr_category, True, BLACK)
+
+            
+
+    button.update(screen)
+
+
     # Blit its surface onto the screen
     screen.blit(title,(200,25))
     screen.blit(timer,(175,150))
@@ -58,7 +148,7 @@ while not done:
     screen.blit(input_start,(100,290))
     screen.blit(text_input.get_surface(), (200, 300))
     screen.blit(score,(250,375))
-    button.update(screen)
+    
 
     pygame.display.update()
     #pygame.display.flip()

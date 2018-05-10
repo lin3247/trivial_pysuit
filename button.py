@@ -55,6 +55,9 @@ class Button(object):
         if self.rect.collidepoint(event.pos):
             self.clicked = True
             if not self.call_on_release:
+                in_game = not in_game
+                print("button pressed")
+
                 self.function()
 
     def on_release(self,event):
