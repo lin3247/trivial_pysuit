@@ -32,13 +32,14 @@ font = pygame.font.SysFont("arial", 35)
 curr_score = 0					#store game status variables
 curr_category = ""		#store current game category
 curr_category_index = 0
-curr_time = 0					#store current time remaining in game
 
 clock = pygame.time.Clock()
 start_time = pygame.time.get_ticks()
 
-categories = ["countries", "colors", "fruit", "animals"]
+categories = ["countries", "colors", "fruits", "animals"]
 category = font.render("Category: " + curr_category, True, BLACK)
+
+
 
 
 
@@ -73,13 +74,34 @@ def update_game_status():
 
     else:
         remaining_time = 0
-    
+
+countries = {"congo":3, "china":2, "usa":1}
+colors = {"red":1,"gold":3}
+fruits = {"apple":1, "orange":2}
+animals = {"cat":1, "dog":2}
+
 def get_word_value(word):
+    global curr_category
 
-    temp_val = 1
 
+    if curr_category == "countries":
+        if word in countries:
+            return countries.get(word)
 
-    return temp_val
+    if curr_category == "colors":
+        if word in colors:
+            return colors.get(word)
+
+    if curr_category == "fruits":
+        if word in fruits:
+            return fruits.get(word)
+
+    if curr_category == "animals":
+        if word in animals:
+            return animals.get(word)
+
+    return 0
+
 
 
 
@@ -111,13 +133,14 @@ while not done:
 
     if(in_game):
         #display remaining_time
-        remaining_time = (59999 - (pygame.time.get_ticks() - start_time))
+        remaining_time = (9999 - (pygame.time.get_ticks() - start_time))
         timer = font.render("Timer: " + str(remaining_time//1000) + "." + str((remaining_time%1000)//100), True, BLACK)   
 
         #check if close enough to 0 time left
         if(remaining_time <= 10):
             remaining_time = 0
             in_game = False
+            timer = font.render("Timer: " + str(remaining_time//1000) + "." + str((remaining_time%1000)//100), True, BLACK)
 
 
     #Feed text_input with events every frame so it can grab user input.
@@ -125,10 +148,10 @@ while not done:
     if text_input.update(events):
     	if(in_game):
             #get current word
-            word = text_input.get_text()
+            word = text_input.get_text().lower()
             
             #get word value
-            value = get_word_value("sdfsf")
+            value = get_word_value(word)
 
             #update points
             curr_score = curr_score + value
