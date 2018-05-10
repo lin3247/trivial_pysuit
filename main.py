@@ -55,6 +55,7 @@ def update_game_status():
     global curr_category
     global curr_category_index
     global curr_score
+    global score
 
     in_game = not in_game
 
@@ -67,6 +68,9 @@ def update_game_status():
         curr_category = categories[curr_category_index]
         category = font.render("Category: " + curr_category, True, BLACK)
         curr_score = 0
+        score = font.render("Score: " + str(curr_score), True, BLACK)
+
+
     else:
         remaining_time = 0
     
@@ -137,7 +141,7 @@ while not done:
             curr_category = categories[curr_category_index]
             category = font.render("Category: " + curr_category, True, BLACK)
             score = font.render("Score: " + str(curr_score), True, BLACK)
-
+            text_input.clear_text()
             
 
     button.update(screen)
