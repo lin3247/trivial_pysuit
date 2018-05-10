@@ -54,7 +54,7 @@ def update_game_status():
     global categories
     global curr_category
     global curr_category_index
-    global points
+    global curr_score
 
     in_game = not in_game
 
@@ -66,7 +66,7 @@ def update_game_status():
         curr_category_index = temp_index
         curr_category = categories[curr_category_index]
         category = font.render("Category: " + curr_category, True, BLACK)
-        points = 0
+        curr_score = 0
     else:
         remaining_time = 0
     
@@ -126,7 +126,7 @@ while not done:
             value = get_word_value("sdfsf")
 
             #update points
-            points = points + value
+            curr_score = curr_score + value
 
             #set a new category
             temp_index = random.randint(0,len(categories)-1)
@@ -135,6 +135,7 @@ while not done:
             curr_category_index = temp_index
             curr_category = categories[curr_category_index]
             category = font.render("Category: " + curr_category, True, BLACK)
+            score = font.render("Score: " + str(curr_score), True, BLACK)
 
             
 
